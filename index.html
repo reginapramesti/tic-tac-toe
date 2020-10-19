@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Simple Tic Tac Toe!</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta content="utf-8" http-equiv="encoding" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=swap" rel="stylesheet"> 
+  <style>
+    :root {
+      --game-box-size: 150px;
+      --border-style: 2px solid black;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0px;
+      font-family: 'Balsamiq Sans', sans-serif;
+    }
+
+    body,
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gamebox {
+      margin: 1px;
+      border: none;
+      background-color: white;
+      width: var(--game-box-size);
+      height: var(--game-box-size);
+    }
+
+    img {
+      width: calc(var(--game-box-size) * 0.6);
+      height: calc(var(--game-box-size) * 0.6);
+    }
+
+    .row {
+      flex-direction: row;
+    }
+
+    .column {
+      flex-direction: column;
+    }
+
+    .top,
+    .vmiddle {
+      border-bottom: var(--border-style);
+    }
+
+    .bottom,
+    .vmiddle {
+      border-top: var(--border-style);
+    }
+
+    .left,
+    .hmiddle {
+      border-right: var(--border-style);
+    }
+
+    .right,
+    .hmiddle {
+      border-left: var(--border-style);
+    }
+
+    .container {
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .settings {
+      width: 100%;
+      /* justify-content: space-between; */
+    }
+
+    #reset {
+      width: 50px;
+      height: 50px;
+      border: none;
+      background-color: darkred;
+      border-radius: 10px;
+    }
+    
+    #reset:hover {
+      opacity: 70%;
+      cursor: pointer;
+    }
+
+    .fa {
+      font-size: 30px;
+      color: white;
+    }
+
+    .turn {
+      font-size: 36px;
+      margin: 0px;
+    }
+
+    #player {
+      font-weight: bold;
+      font-size: 48px;
+    }
+  </style>
+  <script>
+    const PLAYER = {
+      x: "X",
+      o: "O",
+    };
+    Object.freeze(PLAYER);
+    let currentPlayer = PLAYER.x;
+
+    const xImage = new Image();
+    xImage.src = "https://static.thenounproject.com/png/2147847-200.png";
+    const oImage = new Image();
+    oImage.src = "https://www.dreamincode.net/forums/uploads/monthly_10_2010/post-0-12884151170642.png";
+
+    function isValidMove(box) {
+      return !box.hasChildNodes();
+    }
+
+    function selectBox(box) {
+      if (!isValidMove(box)) {
+        return;
+      }
+
+      box.appendChild(
+        currentPlayer === PLAYER.x
+          ? xImage.cloneNode(true)
+          : oImage.cloneNode(true)
+      );
+
+      // Change to next player
+      currentPlayer = currentPlayer === PLAYER.x ? PLAYER.o : PLAYER.x;
+      document.getElementById("player").innerHTML = currentPlayer;
+
+      // Change the hover style
+      // Simply to inform users that this "can't" be clicked anymore
+      removeHoverState(box);
+    }
+
+    function setHoverState(box) {
+      if (isValidMove(box)) {
+        box.style.backgroundColor = "lightgrey";
+        box.style.cursor = "pointer";
+      }
+    }
+
+    function removeHoverState(box) {
+      box.style.backgroundColor = "white";
+      box.style.cursor = "default";
+    }
+
+    function resetBoard() {
+      const boxElements = document.getElementsByClassName("gamebox");
+      for (const box of boxElements) {
+        while (box.firstChild) {
+          box.firstChild.remove();
+        }
+      }
+      document.getElementById("player").innerHTML = PLAYER.x;
+      currentPlayer = PLAYER.x
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div>
+      <p class="turn">
+        Player <span id="player">X</span>&#39;s turn
+      </p>
+    </div>
+    <div class="column">
+      <div>
+        <div class="gamebox top left" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox top hmiddle" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox top right" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+      </div>
+      <div>
+        <div class="gamebox vmiddle left" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox vmiddle hmiddle" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox vmiddle right" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+      </div>
+      <div>
+        <div class="gamebox bottom left" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox bottom hmiddle" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+        <div class="gamebox bottom right" onclick="selectBox(this)" onmouseover="setHoverState(this)"
+          onmouseleave="removeHoverState(this)"></div>
+      </div>
+    </div>
+    <div class="settings">
+      <button id="reset" onclick="resetBoard()"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</body>
+
+</html>
